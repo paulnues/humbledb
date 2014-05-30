@@ -651,3 +651,23 @@ def test_exercise_normal_index():
     with DBTest:
         Test.find_one()
 
+
+def test_mixin_method_override():
+    class SomeMixin(object):
+        @classmethod
+        def save(cls):
+            pass
+
+    class TomatoDoc(Document, SomeMixin):
+        config_database = database_name()
+        config_collection = 'tomato'
+        config_indexes = ['user_name']
+
+        user_name = 'u'
+
+    with DBTest:
+        with mock.patch.object(SomeMixin, 'save') as save_method:
+            TomatoDoc.save()
+
+    save_method.assert_called_once()
+
