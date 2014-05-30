@@ -145,14 +145,15 @@ class DocumentMeta(type):
         # values are string literals or `NameMap` subclasses. These attributes
         # will be mapped to document keys where the key is the value
         for name in cls_dict.keys():
+            # Skip most everything (including methods as you can override
+            # them if necessary)
+            if not isinstance(cls_dict[name], basestring):
+                continue
             # Raise error on bad attribute names
             if name in bad_names:
                 raise TypeError("'{}' bad attribute name".format(name))
             # Skip configuration
             if name in config_names:
-                continue
-            # Skip most everything
-            if not isinstance(cls_dict[name], basestring):
                 continue
             # Skip private stuff
             if name.startswith('_') and name != '_id':
